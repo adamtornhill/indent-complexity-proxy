@@ -4,7 +4,8 @@
 ;;; see http://www.gnu.org/licenses/gpl.html
 
 (ns indent-complexity-proxy.complexity
-  (:require [clojure.string :as string]))
+  (:require [clojure.string :as string]
+            [incanter.stats :as stats]))
 
 (defn- trim-indent
   "For simplicity we drop all matches - doesn't
@@ -54,6 +55,36 @@
   [text]
   (remove #(re-matches #"^\s*$" %) text))
 
+;; Specify functions for calculating the statistics.
+;; Each of these functions operate on a sequence of
+;; lines as specified by their indentation:
+
+(defn- as-presentation-value
+  [v]
+  (format "%.2f" v))
+
+(def total (comp float (partial reduce +)))
+
+(def mean (comp as-presentation-value stats/mean))
+
+(def median (comp as-presentation-value stats/median))
+
+(def sd (comp as-presentation-value stats/sd))
+
+(defn max-c [v]
+  (if (seq v)
+    (apply max v)
+    0))
+
+(defn- stats-from
+  [indented-lines]
+  {:total (total indented-lines)
+   :n (count indented-lines)
+   :mean (mean indented-lines)
+   :median (median indented-lines)
+   :sd (sd indented-lines)
+   :max (max-c indented-lines)})
+
 (defn total-indent-complexity
   "Accumulates the total complexity (expressed as
    leading logical units of indentation) of the
@@ -62,4 +93,4 @@
   (->>
    (drop-empty-lines lines)
    (map (partial as-logical-indents options))
-   (reduce +)))
+   stats-from))

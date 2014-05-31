@@ -27,8 +27,11 @@
 
 (deftest sums-the-complexity-of-text-blocks
   "The text blocks are expressed as a seq of lines."
-  (is (= (c/total-indent-complexity options ["\tSome code" "\t\tOn multiple" "    lines"]) 4)))
+  (is (= (c/total-indent-complexity options ["\tSome code" "\t\tOn multiple" "    lines"])
+         {:total 4.0 :n 3 :mean "1.33" :median "1.00" :sd "0.58" :max 2})))
 
 (deftest empty-lines-are-ignored
-  (is (= (c/total-indent-complexity options [""]) 0))
-  (is (= (c/total-indent-complexity options ["    \t    \t"]) 0)))
+  (is (= (c/total-indent-complexity options [""])
+        {:total 0.0 :n 0 :mean "NaN" :median "0.00" :sd "-0.00" :max 0}))
+  (is (= (c/total-indent-complexity options ["    \t    \t"])
+        {:total 0.0, :n 0 :mean "NaN" :median "0.00" :sd "-0.00" :max 0})))

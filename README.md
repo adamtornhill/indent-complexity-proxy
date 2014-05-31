@@ -24,27 +24,32 @@ The command above will create a standalone `jar` containing all the dependencies
 
 ### Metrics
 
-The tool just outputs the total, aggregated complexity of the provided code. Empty and blank lines are ignored. I'll probably extend the tool with some basic statistics (mean, median, standard deviation) soon.
+The tool outputs the total, aggregated complexity of the provided code together with some basic statistics (mean, median, standard deviation, etc). Empty and blank lines are ignored.
 
 ### Calculate the complexity of a file.
 
 Just provide the file as an argument:
 
-	   adam$ java -jar indent-complexity-proxy-0.1.0-standalone.jar project.clj 
-	   15
+	   adam$ java -jar indent-complexity-proxy-0.2.0-standalone.jar project.clj 
+	   {:total 19.5, :n 12, :mean 1.63, :median 0.50, :sd 1.79, :max 9/2}
+
+If you want a quick summary of the total complexity, add the `-c` switch:
+
+	   adam$ java -jar indent-complexity-proxy-0.2.0-standalone.jar project.clj -c
+	   19.5
 
 ### Pipe code to the program
 
 The tool accepts input on standard input. Just pipe some code to it:
 
-	   adam$ cat project.clj | java -jar target/indent-complexity-proxy-0.1.0-standalone.jar
-	   15
+	   adam$ cat project.clj | java -jar target/indent-complexity-proxy-0.2.0-standalone.jar
+	   {:total 19.5, :n 12, :mean 1.63, :median 0.50, :sd 1.79, :max 9/2}
 
 ### Program options
 
 Run the tool with the `-h` option to get a list of supported arguments:
 
-	   adam$ java -jar target/indent-complexity-proxy-0.1.0-standalone.jar -h
+	   adam$ java -jar target/indent-complexity-proxy-0.2.0-standalone.jar -h
 	   This program calculates code complexity using white space as a proxy.
 	   
 	   Usage: program-name [options] file|stdin
@@ -52,5 +57,6 @@ Run the tool with the `-h` option to get a list of supported arguments:
 	   Options:
 	     -s, --spaces SPACES  4  The number of spaces to consider one logical indent.
 	     -t, --tabs TABS      1  The number of tabs to consider one logical indent.
+	     -c, --complexity        Just output the total complexity.
 	     -h, --help
 

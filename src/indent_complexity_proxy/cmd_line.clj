@@ -24,6 +24,7 @@
     :default 4 :parse-fn #(Integer/parseInt %)]
    ["-t" "--tabs TABS" "The number of tabs to consider one logical indent."
     :default 1 :parse-fn #(Integer/parseInt %)]
+   ["-c" "--complexity" "Just output the total complexity."]
    ["-h" "--help"]])
 
 (defn- usage [options-summary]
@@ -67,14 +68,18 @@
 ;;; Application logic
 ;;;
 
-(def as-presentation-value (comp int math/ceil))
+(defn- output-as-specified-by
+  [options output]
+  (if (:complexity options)
+    (:total output)
+    output)) ; everything
 
 (defn- run-analysis
   [options arguments]
   (->>
    (read-input-based-on arguments)
    (c/total-indent-complexity options)
-   as-presentation-value
+   (output-as-specified-by options)
    println))
 
 (defn -main
