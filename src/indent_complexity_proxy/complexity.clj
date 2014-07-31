@@ -73,7 +73,7 @@
 
 (defn max-c [v]
   (if (seq v)
-    (apply max v)
+    (int (apply max v))
     0))
 
 (defn- stats-from
